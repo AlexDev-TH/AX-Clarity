@@ -6,7 +6,6 @@
 
 [![Release](https://img.shields.io/github/v/release/AlexDev-TH/AX-Clarity?label=release&color=orange)](https://github.com/AlexDev-TH/AX-Clarity/releases/latest)
 [![Downloads](https://img.shields.io/github/downloads/AlexDev-TH/AX-Clarity/total?label=downloads&color=brightgreen)](https://github.com/AlexDev-TH/AX-Clarity/releases)
-[![Build](https://github.com/AlexDev-TH/AX-Clarity/actions/workflows/build.yml/badge.svg)](https://github.com/AlexDev-TH/AX-Clarity/actions/workflows/build.yml)
 ![Ghidra](https://img.shields.io/badge/Ghidra-12.1.2%20%7C%2012.1.3%20%7C%2012.1.4%20%7C%2012.2-red)
 ![CPU](https://img.shields.io/badge/CPU-RH850%20%7C%20V850%20%7C%20M16C%20%7C%20R8C%20%7C%20PowerPC-blue)
 [![License](https://img.shields.io/badge/license-MIT-lightgrey)](LICENSE)

@@ -1,11 +1,9 @@
 name: build
 
+# Run by hand from the Actions tab (Run workflow). Release zips are built with
+# tools/build.py and attached to the GitHub release.
 on:
-  push:
-  pull_request:
   workflow_dispatch:
-  release:
-    types: [published]
 
 permissions:
   contents: write
@@ -51,9 +49,3 @@ jobs:
         with:
           name: AX-Clarity-ghidra-${{ matrix.ghidra }}
           path: dist/*.zip
-
-      - name: Attach zip to the release
-        if: github.event_name == 'release'
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: gh release upload "${{ github.event.release.tag_name }}" dist/*.zip --clobber
