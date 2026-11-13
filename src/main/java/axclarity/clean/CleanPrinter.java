@@ -274,7 +274,7 @@ public final class CleanPrinter {
 					out = rename.get(t.s);
 					count(r, "names");
 				}
-				else if (opt.removeNoise && t.s.startsWith("_DAT_")) {
+				else if (opt.removeNoise && t.s.matches("_(DAT|ram|cal|io)_[0-9a-fA-F]+")) {
 					out = t.s.substring(1);
 					count(r, "noise");
 				}
@@ -1110,7 +1110,7 @@ public final class CleanPrinter {
 						hex = false;
 					}
 					String suffix = t.s.replaceAll("^(0[xX][0-9a-fA-F]+|[0-9]+)", "");
-					String nv = (hex ? "0x" + Long.toHexString(v) : Long.toString(v)) + suffix;
+					String nv = (hex && v != 0 ? "0x" + Long.toHexString(v) : Long.toString(v)) + suffix;
 					if (!nv.equals(t.s)) {
 						out = nv;
 						changed = true;

@@ -47,7 +47,7 @@
 Also
 
 - 🔁 **Safe and reversible.** Preparation runs in one transaction; one **Undo** restores everything. Your own names and types are never overwritten and the .bin file is never touched.
-- 🎯 **Same meaning on every line.** The Clean Code view only applies rewrites that C semantics prove equivalent; anything uncertain is left as is (31 test cases).
+- 🎯 **Same meaning on every line.** The Clean Code view only applies rewrites that C semantics prove equivalent; anything uncertain is left as is (33 test cases).
 - 🧩 **The normal Ghidra decompiler gets better too**, because preparation fixes the database, not just the AX-Clarity window.
 - 🖱️ **Double-click a line** in Clean Code to jump to it in the Listing.
 - 📤 **Export the whole program** as one `.c` file for searching and diffing ECU versions.
@@ -71,9 +71,9 @@ Every function in the ROM, stock Ghidra versus AX-Clarity, same file and same de
 | `CONCAT` `SUB` `ZEXT` `SEXT` | 45 to **42** (-7%) | 37 to **12** (-68%) | 475 to **176** (-63%) |
 | Char literals like `'\x04'` | 4,128 to **16** (-99.6%) | 1,856 to **4** (-99.7%) | 497 to **14** (-97%) |
 | WARNING comments | 549 to **24** (-96%) | 287 to **77** (-73%) | 675 to **13** (-98%) |
-| Code size (characters) | 1,237,832 to **767,977** (-38%) | 418,785 to **337,756** (-19%) | 141,769 to **75,533** (-47%) |
+| Code size (characters) | 1,237,832 to **766,683** (-38%) | 418,785 to **337,408** (-19%) | 141,769 to **75,390** (-47%) |
 | Lines | 51,853 to **46,708** (-10%) | 19,519 to **19,646** (+1%) | 6,067 to **5,335** (-12%) |
-| Named globals `ram_` `cal_` `io_` | 0 to **20,439** | 0 to **11,140** | 0 to **2,206** |
+| Named globals `ram_` `cal_` `io_` | 0 to **20,439** | 0 to **11,154** | 0 to **2,265** |
 | `BIT()` `SETBIT()` `CLRBIT()` | 0 to **339** | 0 to **330** | 0 to **696** |
 | Base register found | `gp=0xfebf0000` | no base register | `SB=0x400` |
 
@@ -129,7 +129,7 @@ Force a base register value with `-postScript AXClarityPrepare.java gp=0xFEBF000
 
 ## 🛠️ Build
 
-JDK 21 and Python 3:
+Python 3 and the JDK your Ghidra uses (JDK 21 for 12.1.x, JDK 25 for 12.2; point `JAVA_HOME` at it):
 
 ```bash
 python tools/build.py "C:/ghidra_12.1.2_PUBLIC"           # dist/*.zip

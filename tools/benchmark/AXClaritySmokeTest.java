@@ -93,6 +93,8 @@ public class AXClaritySmokeTest extends GhidraScript {
 			"  if (!BIT(v1, 2) && (x == 1)) {\n");
 		check("ascii tag stays hex", clean("  if (x != 0x4750) {"), "  if (x != 0x4750) {\n");
 		check("printable char kept", clean("  if (cVar1 != 'M') {"), "  if (v1 != 'M') {\n");
+		check("overlap underscore", clean("  _ram_07e7 = 1;"), "  ram_07e7 = 1;\n");
+		check("zero stays 0", clean("  if (io_01a6 == 0) {"), "  if (io_01a6 == 0) {\n");
 		check("sub piece", clean("  x = SUB42(y,0);"), "  x = y;\n");
 		check("sub piece in expr", clean("  x = SUB42(y,2) + 1;"), "  x = (u16)(y >> 16) + 1;\n");
 		check("ge zero", clean("  if (-1 < (int)(x - 2)) {"), "  if (0 <= (" + s32 + ")(x - 2)) {\n");

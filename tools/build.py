@@ -46,7 +46,30 @@ def run(cmd):
     subprocess.check_call(cmd)
 
 
-def compile_java(ghidra, out_jar):
+def javac_for(level):
+    """javac that can read Ghidra's class files: JAVA_HOME, then JAVA<level>_HOME, then PATH."""
+    for env in ("JAVA%s_HOME" % level, "JAVA_HOME"):
+        home = os.environ.get(env)
+        if home:
+            exe = os.path.join(home, "bin", "javac.exe" if os.name == "nt" else "javac")
+            if os.path.exists(exe) and java_major(exe) >= int(level):
+                return exe
+    if java_major("javac") >= int(level):
+        return "javac"
+    sys.exit("Ghidra needs JDK %s or newer to build against; set JAVA_HOME (or JAVA%s_HOME)" % (level, level))
+
+
+def java_major(exe):
+    try:
+        out = subprocess.run([exe, "-version"], capture_output=True, text=True).stdout or ""
+        out += subprocess.run([exe, "-version"], capture_output=True, text=True).stderr or ""
+        v = out.strip().split()[-1]
+        return int(v.split(".")[0])
+    except Exception:
+        return 0
+
+
+def compile_java(ghidra, out_jar, level="21"):
     srcs = glob.glob(os.path.join(ROOT, "src", "main", "java", "**", "*.java"), recursive=True)
     cp = CPSEP.join(jars(ghidra, "Ghidra/Framework/**/lib/*.jar", "Ghidra/Features/Base/lib/*.jar",
                          "Ghidra/Features/Decompiler/lib/*.jar"))
@@ -58,8 +81,8 @@ def compile_java(ghidra, out_jar):
                 f.write("\"%s\"\n" % s.replace("\\", "/"))
         classes = os.path.join(tmp, "classes")
         os.makedirs(classes)
-        run(["javac", "--release", "21", "-encoding", "UTF-8", "-Xlint:-options", "-d", classes,
-             "@" + argfile])
+        run([javac_for(level), "--release", level, "-encoding", "UTF-8", "-Xlint:-options", "-d",
+             classes, "@" + argfile])
         os.makedirs(os.path.dirname(out_jar), exist_ok=True)
         with zipfile.ZipFile(out_jar, "w", zipfile.ZIP_DEFLATED) as z:
             for base, _, files in os.walk(classes):
@@ -68,7 +91,7 @@ def compile_java(ghidra, out_jar):
                     z.write(full, os.path.relpath(full, classes).replace(os.sep, "/"))
 
 
-def stage(ghidra, version, dest):
+def stage(ghidra, version, dest, level="21"):
     if os.path.exists(dest):
         shutil.rmtree(dest)
     os.makedirs(dest)
@@ -81,7 +104,7 @@ def stage(ghidra, version, dest):
             shutil.copy2(os.path.join(ROOT, f), dest)
     if os.path.isdir(os.path.join(ROOT, "ghidra_scripts")):
         shutil.copytree(os.path.join(ROOT, "ghidra_scripts"), os.path.join(dest, "ghidra_scripts"))
-    compile_java(ghidra, os.path.join(dest, "lib", NAME + ".jar"))
+    compile_java(ghidra, os.path.join(dest, "lib", NAME + ".jar"), level)
 
 
 def main():
@@ -100,7 +123,7 @@ def main():
     release = props.get("application.release.name", "PUBLIC")
     build = os.path.join(ROOT, "build")
     staged = os.path.join(build, NAME)
-    stage(a.ghidra, version, staged)
+    stage(a.ghidra, version, staged, props.get("application.java.compiler", "21"))
     dist = os.path.join(ROOT, "dist")
     os.makedirs(dist, exist_ok=True)
     zname = os.path.join(dist, f"ghidra_{version}_{release}_{NAME}.zip")
