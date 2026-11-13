@@ -1,0 +1,9 @@
+build/
+dist/
+bin/
+.gradle/
+*.class
+__pycache__/
+*.pyc
+.vscode/
+.idea/
